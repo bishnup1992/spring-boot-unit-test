@@ -5,7 +5,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FilteredXMLGenerator {
-    public static void main(String[] args) {
+    /**
+     *
+     * @param args
+     */
+    public static void main(final String[] args) {
         // Input merchant_language XML content as String
         String merchantLanguage = "<name>Merchant 1</name>\n<short_description>Short description 1</short_description>\n<long_description>Long description 1</long_description>\n<keywords>Keyword 1, Keyword 2</keywords>\n<categories>Category 1, Category 2</categories>";
 
@@ -23,7 +27,7 @@ public class FilteredXMLGenerator {
         }
     }
 
-    private static String filterXMLAttributes(String xmlContent, String... attributes) {
+    private static String filterXMLAttributes(final String xmlContent, final String... attributes) {
         StringBuilder filteredXMLBuilder = new StringBuilder();
         filteredXMLBuilder.append("<merchants>");
         for (String attribute : attributes) {

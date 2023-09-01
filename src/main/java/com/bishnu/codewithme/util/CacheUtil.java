@@ -1,4 +1,7 @@
 package com.bishnu.codewithme.util;
+
+import org.springframework.util.StringUtils;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,30 +19,46 @@ public class CacheUtil {
     public void refreshPromIdValues(List<CmaReqstDtl> cmaReqDtlsList) {
         List<PromoInfo> promoInfoList = new ArrayList<>();
         Map<String, PromoInfo> promoInfoCache = new HashMap<>();
-
-        // Iterate through cmaReqDtlsList using Java 8 forEach
+        ecmsDatabaseMapper.deletePromoIdValues();
         cmaReqDtlsList.forEach(cmaReqstDtl -> {
-            // Iterate through multiple promoId attributes using IntStream
-            IntStream.rangeClosed(1, 9)
-                    .mapToObj(i -> "promoId" + i) // Create promoId attribute names
-                    .map(promoIdAttr -> (String) BeanUtils.getProperty(cmaReqstDtl, promoIdAttr))
-                    .filter(promoId -> promoId != null && !promoId.isEmpty())
-                    .forEach(promoId -> {
-                        PromoInfo cachedPromoInfo = promoInfoCache.get(promoId);
-                        if (cachedPromoInfo != null) {
-                            promoInfoList.add(cachedPromoInfo);
-                        } else {
-                            List<PromoInfo> selectedPromoInfo = yourMapper.selectPromoInfo(promoId); // Pass promoId as String
-                            selectedPromoInfo.forEach(info -> promoInfoCache.put(info.getPromoId(), info));
-                            promoInfoList.addAll(selectedPromoInfo);
-                        }
-                    });
+            processCmaRequestDetails(promoInfoList, promoInfoCache, cmaReqstDtl);
         });
 
-        // Check if promoInfoList is not empty before batch inserting
         if (!promoInfoList.isEmpty()) {
-            yourMapper.batchInsertIntoPromoIdDtlsStg(promoInfoList);
+            ecmsDatabaseMapper.insertPromoIdValues(promoInfoList);
         }
+
     }
+
+    private static void processCmaRequestDetails(List<PromoInfo> promoInfoList, Map<String, PromoInfo> promoInfoCache, CmaReqstDtl cmaReqstDtl) {
+        for (int i = 1; i <= 9; i++) {
+            try {
+
+
+                String promoIdAttr = "promoId" + i;
+                String promoId = BeanUtils.getProperty(cmaReqstDtl, promoIdAttr);
+                if (promoId != null && !promoId.isEmpty()) {
+                    if (promoInfoCache.containsKey(promoId)) {
+                        PromoInfo cachedPromoInfoObj = promoInfoCache.get(promoId);
+                        if (cachedPromoInfoObj ! = null && !promoInfo.getPromoId().isEmpty()){
+                            break; // Exit the loop when promoId is found
+                        }
+                    } else {
+                        List<PromoInfo> selectedPromoInfo = yourMapper.selectPromoInfo(promoId);
+                        if (selectedPromoInfo != null && !selectedPromoInfo.isEmpty()) {
+                            promoInfoList.addAll(selectedPromoInfo);
+                            selectedPromoInfo.forEach(info -> promoInfoCache.put(info.getPromoId(), info));
+                            break; // Exit the loop when promoId is found
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Some error{} ", e.getMessage());
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+
+    }
+
 
 }

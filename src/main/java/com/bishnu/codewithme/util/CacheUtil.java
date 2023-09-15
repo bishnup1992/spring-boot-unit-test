@@ -94,6 +94,41 @@ public class CacheUtil {
         }
     }
 
+    private void processPromoInfo(List<PromoInfo> promoInfoList, Map<String, List<PromoInfo>> promoInfoCache, CmaReqDtl cmaRequestDtl) {
+        for (int i = 1; i <= 9; i++) {
+            String promoIdAttr = "promoId" + i;
+            String promoId;
+
+            try {
+                promoId = BeanUtils.getProperty(cmaRequestDtl, promoIdAttr);
+            } catch (Exception e) {
+                log.error("processPromoInfoDetails got an exception: {}", e.getMessage());
+                continue; // Skip to the next iteration in case of an exception
+            }
+
+            if (StringUtils.isEmpty(promoId)) {
+                continue; // Skip to the next iteration if promoId is empty
+            }
+
+            if (promoInfoCache.containsKey(promoId)) {
+                List<PromoInfo> promoInfos = promoInfoCache.get(promoId);
+                if (CollectionsUtils.isNotEmpty(promoInfos)) {
+                    break; // Exit the loop when promoInfo is found in cache
+                }
+            } else {
+                List<PromoInfo> promoInfos = cplanDatabaseMapper.getPromoInfo(promoId);
+                if (CollectionsUtils.isNotEmpty(promoInfos)) {
+                    promoInfoList.addAll(promoInfos);
+                    promoInfoCache.put(promoId, promoInfos);
+                    break; // Exit the loop when promoInfo is found in the database
+                } else {
+                    log.debug("processPromoInfoDetails No PromoInfo Found For the Id {}", promoId);
+                }
+            }
+        }
+    }
+
+
 
 
 

@@ -63,48 +63,37 @@ public class CacheUtil {
 
     // Java 8 Format
 
-    public void refreshPromIdValues(List<CmaReqstDtl> cmaReqDtlsList) {
-        List<PromoInfo> promoInfoList = new ArrayList<>();
-        Map<String, PromoInfo> promoInfoCache = new HashMap<>();
+    private void processPromoInfo(List<PromoInfo> promoInfoList, Map<String, List<PromoInfo>> promoInfoCache, CmaReqDtl cmaRequestDtl) {
+        for (int i = 1; i <= 9; i++) {
+            String promoIdAttr = "promoId" + i;
+            String promoId;
+            try {
+                promoId = BeanUtils.getProperty(cmaRequestDtl, promoIdAttr);
+            } catch (Exception e) {
+                log.error("processPromoInfoDetails got exception {}", e.getMessage());
+                continue; // Skip to the next iteration in case of an exception
+            }
 
-        cmaReqDtlsList.forEach(cmaReqstDtl -> {
-            IntStream.range(1, 10) // Generate a stream of integers from 1 to 9
-                    .mapToObj(i -> "promoId" + i) // Map the integer to promoId attribute name
-                    .map(promoIdAttr -> {
-                        try {
-                            return (String) BeanUtils.getProperty(cmaReqstDtl, promoIdAttr);
-                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                            // Handle the exception, e.g., log it or take appropriate action
-                            e.printStackTrace();
-                            return null; // Return null in case of an exception
-                        }
-                    })
-                    .filter(promoId -> promoId != null && !promoId.isEmpty()) // Filter non-null and non-empty promoIds
-                    .anyMatch(promoId -> {
-                        PromoInfo cachedPromoInfo = promoInfoCache.get(promoId);
-                        if (cachedPromoInfo != null) {
-                            // Check if promoInfoList already contains cachedPromoInfo
-                            if (!promoInfoList.contains(cachedPromoInfo)) {
-                                promoInfoList.add(cachedPromoInfo);
-                            }
-                            return true; // Exit the loop when promoId is found
-                        } else {
-                            List<PromoInfo> selectedPromoInfo = yourMapper.selectPromoInfo(promoId);
-                            if (!selectedPromoInfo.isEmpty()) {
-                                promoInfoList.addAll(selectedPromoInfo);
-                                selectedPromoInfo.forEach(info -> promoInfoCache.put(info.getPromoId(), info));
-                                return true; // Exit the loop when promoId is found
-                            }
-                        }
-                        return false; // Continue to the next promoId if not found
-                    });
-        });
-
-        // Check if promoInfoList is not empty before batch inserting
-        if (!promoInfoList.isEmpty()) {
-            yourMapper.batchInsertIntoPromoIdDtlsStg(promoInfoList);
+            if (StringUtils.isNotEmpty(promoId)) {
+                if (promoInfoCache.containsKey(promoId)) {
+                    List<PromoInfo> promoInfos = promoInfoCache.get(promoId);
+                    if (CollectionsUtils.isNotEmpty(promoInfos)) {
+                        break;
+                    }
+                } else {
+                    List<PromoInfo> promoInfos = cplanDatabaseMapper.getPromoInfo(promoId);
+                    if (CollectionsUtils.isNotEmpty(promoInfos)) {
+                        promoInfoList.addAll(promoInfos);
+                        promoInfoCache.put(promoId, promoInfos);
+                        break;
+                    } else {
+                        log.debug("processPromoInfoDetails No PromoInfo Found For the Id {}", promoId);
+                    }
+                }
+            }
         }
     }
+
 
 
 

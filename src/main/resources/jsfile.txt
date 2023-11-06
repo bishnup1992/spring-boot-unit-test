@@ -1,0 +1,9 @@
+$("#contentpath").append("<b>Content path: </b>" + escapeHtml(encodedAssetpath));
+
+function escapeHtml(html) {
+  return html.replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#39;");
+}

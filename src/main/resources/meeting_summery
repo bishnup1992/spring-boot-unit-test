@@ -18,3 +18,12 @@ Review existing tech stack.
 Focus on relational database for user data storage.
 Research updated tech stack options.
 Email Bodhi for POC codebase and completion status.
+
+==============================================
+During the meeting, the team discussed the integration with Scribe and emphasized the importance of understanding their technology stack. Open source technologies were highlighted, with a specific focus on analyzing potential enterprise costs. The existing technology stack within the farm was reviewed to ensure compatibility and cost-effectiveness.
+
+A key point raised was the need to store user data in a relational database. The team acknowledged the significance of considering scalability and efficiency in the storage solution. Additionally, research on each technology stack option was emphasized, given the evolving landscape over the past 3 to 4 years.
+
+Bodhi informed the team that only the UI/UX part of the solution was designed, and no codebase is currently available. It was suggested to reach out to Bodhi via email to inquire about any existing POC codebase and its status with other developers.
+
+The meeting concluded with action items outlined for the next steps, including connecting with Scribe, conducting open source cost analysis, reviewing the existing tech stack, focusing on relational database storage for user data, and researching updated tech stack options.

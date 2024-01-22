@@ -15,3 +15,11 @@ Cloud-Native and Multi-Cloud Support:
 Jenkins: While Jenkins can be used in various environments, including the cloud, it doesn't provide native support for multi-cloud deployments out of the box. Users might need additional plugins or configurations for multi-cloud scenarios.
 
 Spinnaker: Spinnaker is built with a focus on cloud-native applications and offers native support for deploying applications across multiple cloud providers. It abstracts away the underlying infrastructure details, making it easier to manage multi-cloud deployments.
+
+
+How frequently do we generate new content in the production environment?
+What is the primary method preferred by the business for content creation – through file uploads or the creation of fragments?
+Looking ahead, if the new target system supports only fragment consumption instead of files, are there any anticipated challenges?
+Do we have insights into the current volume of files or fragments in production, and is there an estimate for potential volume spikes in the target system?
+Are there any restrictions on the versioning feature in the current system, and how frequently is this versioning capability utilized by the business?
+Can we determine the frequency of content modifications after it has been published to the production environment?

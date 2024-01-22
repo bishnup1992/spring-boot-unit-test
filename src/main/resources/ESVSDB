@@ -1,0 +1,172 @@
+Performance:
+
+Elasticsearch is often more performant for full-text search scenarios due to its inverted index structure and distributed architecture.
+Scalability:
+
+Elasticsearch is designed to scale horizontally, making it suitable for large datasets and high search volumes.
+Complex Queries:
+
+If you need to perform complex queries, such as fuzzy matching, stemming, or proximity searches, Elasticsearch might offer more options out of the box.
+Integration:
+
+If your application is heavily integrated with Oracle Database and you have a small dataset, using Oracle Text might be simpler and sufficient.
+Indexing Overhead:
+
+Both Oracle Text and Elasticsearch introduce some indexing overhead, especially when dealing with frequent updates or inserts. Elasticsearch is often optimized for this use case.
+
+Oracle Database:
+Oracle Text:
+
+Oracle Database provides the Oracle Text feature, which includes powerful full-text search capabilities. You can create a Text index on the "fragment" column and use various query operators, such as CONTAINS or MATCHES, to search for specific text patterns.
+sql
+Copy code
+SELECT * FROM data WHERE CONTAINS(fragment, 'Bishnu') > 0;
+LIKE Operator:
+
+If you want a simple substring search, you can use the LIKE operator.
+sql
+Copy code
+SELECT * FROM data WHERE fragment LIKE '%Bishnu%';
+Elasticsearch:
+Full-Text Search:
+
+Elasticsearch is designed for full-text search, and it excels at searching across large amounts of textual data. You can create an index in Elasticsearch, and the default search behavior involves matching text across documents.
+json
+Copy code
+GET /your_index/_search
+{
+  "query": {
+    "match": {
+      "fragment": "Bishnu"
+    }
+  }
+}
+
+================
+Fuzzy Matching:
+Fuzzy matching allows you to find documents that match a given term approximately. It's useful for handling typos or variations in spelling.
+
+json
+Copy code
+GET /your_index/_search
+{
+  "query": {
+    "fuzzy": {
+      "fragment": {
+        "value": "Bishnoo",
+        "fuzziness": "2"
+      }
+    }
+  }
+}
+In this example, the fuzzy query is looking for documents where the "fragment" field is approximately equal to "Bishnoo" with a fuzziness of 2. The fuzziness parameter controls how many edits (insertions, deletions, or substitutions) are allowed.
+
+Stemming:
+Stemming is the process of reducing a word to its base or root form. For example, "running" and "runner" might be stemmed to "run." Stemming allows you to match different forms of a word.
+
+json
+Copy code
+GET /your_index/_search
+{
+  "query": {
+    "match": {
+      "fragment": {
+        "query": "running",
+        "fuzziness": "auto"
+      }
+    }
+  }
+}
+In this example, the match query with fuzziness set to "auto" performs stemming and allows for approximate matches. It can find documents containing words like "run," "runner," or "running."
+
+Proximity Searches:
+Proximity searches help find documents where terms are within a certain distance from each other.
+
+json
+Copy code
+GET /your_index/_search
+{
+  "query": {
+    "match_phrase": {
+      "fragment": {
+        "query": "Bishnu Devkota",
+        "slop": 2
+      }
+    }
+  }
+}
+Here, the match_phrase query with a slop of 2 looks for documents where "Bishnu" and "Devkota" are within 2 words of each other in the "fragment" field.
+
+Combination of Complex Queries:
+You can combine multiple complex queries using a bool query to create sophisticated search criteria.
+
+json
+Copy code
+GET /your_index/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "fragment": "Bishnu" }},
+        { "fuzzy": { "fragment": { "value": "Devkota", "fuzziness": "auto" }}}
+      ],
+      "should": [
+        { "range": { "date": { "gte": "2022-01-01" }}}
+      ],
+      "must_not": [
+        { "term": { "author": "John" }}
+      ]
+    }
+  }
+}
+In this example, the bool query combines a must clause for exact matches, a fuzzy query for approximate matches, a should clause for a date range, and a must_not clause to exclude documents with a specific author.
+
+These examples illustrate the versatility of Elasticsearch's query DSL for handling various search scenarios. The actual queries would depend on the specific requirements of your application and the structure of your data.
+===========================
+DB Approch
+================
+Fuzzy Matching:
+In Oracle, you can use the LIKE operator with wildcard characters for approximate matching.
+
+sql
+
+SELECT * FROM your_table
+WHERE SOUNDEX(fragment) = SOUNDEX('Bishnoo');
+Note: The SOUNDEX function in Oracle can be used for phonetic matching.
+
+Stemming:
+Stemming in Oracle is typically done through linguistic analysis functions.
+
+sql
+
+SELECT * FROM your_table
+WHERE CONTAINS(fragment, 'FORMSOF(INFLECTIONAL, running)') > 0;
+
+Proximity Searches:
+For proximity searches in Oracle, you can use the NEAR operator.
+
+SELECT * FROM your_table
+WHERE CONTAINS(fragment, 'Bishnu NEAR Devkota', 2) > 0;
+
+Combination of Complex Queries:
+SELECT * FROM your_table
+WHERE fragment LIKE '%Bishnu%'
+  AND SOUNDEX(fragment) = SOUNDEX('Devkota')
+  AND date >= TO_DATE('2022-01-01', 'YYYY-MM-DD')
+  AND author <> 'John';
+
+
+Considerations:
+SQL vs. NoSQL:
+
+Elasticsearch is a NoSQL, distributed search engine designed for full-text search and analytics, while Oracle is a relational database. The choice depends on the nature of your data and the requirements of your application.
+Performance:
+
+Elasticsearch is optimized for text search scenarios and can provide better performance for certain types of queries, especially in large datasets.
+Indexing and Search Features:
+
+Elasticsearch has built-in features for indexing and searching text efficiently, while in a relational database, you may need to create indexes and use specific functions.
+Scalability:
+
+Elasticsearch is horizontally scalable, making it suitable for large datasets and high search volumes. Relational databases may have limitations in horizontal scalability.
+In summary, while many complex queries can be achieved in both Elasticsearch and Oracle, the choice between them depends on your specific use case, data structure, and requirements. Elasticsearch is specifically designed for full-text search scenarios and may provide better performance and features for those use cases.

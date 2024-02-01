@@ -1,7 +1,5 @@
 package com.bishnu.codewithme.util;
 
-import com.google.gson.JsonObject;
-
 public class QueryStringBuilder {
     public static void main(String[] args) {
         // Simulated dynamic values from the request
@@ -10,6 +8,15 @@ public class QueryStringBuilder {
         String oldDocumentStatusValue = "active,inactive"; // Get from request or leave as null
         String documentStatusValue = ""; // Get from request or leave as null
 
+        // Construct the final query string
+        String finalQueryString = buildFinalQueryString(gteValue, lteValue, oldDocumentStatusValue, documentStatusValue);
+
+        // Print or use the finalQueryString as needed
+        System.out.println("Final Query String: " + finalQueryString);
+    }
+
+    // Helper method to build the final query string
+    private static String buildFinalQueryString(String gteValue, String lteValue, String oldDocumentStatusValue, String documentStatusValue) {
         // Prepare the components of the query
         String contentTypeQuery = "(ContentType:\"Disclosure Language\" OR ContentType:\"Disclaimer Language\")";
         String subLOBQuery = "subLOB:\"Disclosure Center of Excellence\"";
@@ -17,29 +24,19 @@ public class QueryStringBuilder {
         String documentStatusQuery = buildDocumentStatusQuery(documentStatusValue);
         String dateRangeQuery = buildDateRangeQuery(gteValue, lteValue);
 
-        // Create a JsonObject
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("contentTypeQuery", contentTypeQuery);
-        jsonObject.addProperty("subLOBQuery", subLOBQuery);
-        if (oldDocStatusQuery != null) {
-            jsonObject.addProperty("oldDocStatusQuery", oldDocStatusQuery);
-        }
-        if (documentStatusQuery != null) {
-            jsonObject.addProperty("documentStatusQuery", documentStatusQuery);
-        }
-        jsonObject.addProperty("dateRangeQuery", dateRangeQuery);
+        // Construct the final query string
+        StringBuilder finalQueryString = new StringBuilder()
+                .append(contentTypeQuery)
+                .append(" AND ")
+                .append(subLOBQuery)
+                .append(" AND ")
+                .append(oldDocStatusQuery)
+                .append(" AND ")
+                .append(documentStatusQuery)
+                .append(" AND ")
+                .append(dateRangeQuery);
 
-        // Convert JsonObject to String
-        String setQuery = jsonObject.toString();
-
-        // Pass the setQuery as an argument to the setQueryMethod
-        setQueryMethod(setQuery);
-    }
-
-    // Example method where setQuery is used
-    private static void setQueryMethod(String setQuery) {
-        // Placeholder implementation; replace with actual use of setQuery
-        System.out.println("setQueryMethod called with setQuery: " + setQuery);
+        return finalQueryString.toString();
     }
 
     // Helper method to build the oldDocumentStatus query part
@@ -54,14 +51,14 @@ public class QueryStringBuilder {
             queryBuilder.append(")");
             return queryBuilder.toString();
         }
-        return null;
+        return "(oldDocumentStatus:Active OR oldDocumentStatus:InActive)";
     }
 
     // Helper method to build the documentStatus query part
     private static String buildDocumentStatusQuery(String documentStatusValue) {
         return (documentStatusValue != null && !documentStatusValue.isEmpty())
                 ? "documentStatus:\"" + documentStatusValue + "\""
-                : null;
+                : "documentStatus:\"Approved Version\"";
     }
 
     // Helper method to build the date range query part

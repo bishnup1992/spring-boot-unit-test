@@ -1,0 +1,31 @@
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class YourTestClass {
+
+    @Mock
+    private ScribeContentCronService scribeContentCronService;
+
+    @InjectMocks
+    private YourClassUnderTest yourClassUnderTest;
+
+    @Test
+    void testContentPublishCornWithRetry() {
+        // Mocking scribeContentCronService to throw RuntimeException for the first 2 attempts and then succeed
+        doThrow(new RuntimeException()).doThrow(new RuntimeException()).doNothing().when(scribeContentCronService).invoke(anyString(), anyString(), isNull());
+
+        // Call the method to be tested
+        yourClassUnderTest.contentPublishCorn();
+
+        // Verify that scribeContentCronService was called 3 times
+        verify(scribeContentCronService, times(3)).invoke(anyString(), anyString(), isNull());
+    }
+}

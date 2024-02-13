@@ -1,0 +1,246 @@
+Aws Services
+----------------
+Compute and Network Services
+Storage and Content Delivery Services
+Security and identity Services
+Database Services
+Analytics Services
+Application Services
+Managemnet and Tool
+
+Cloud Services Model (Types of Cloud Computing)
+-----------------------
+IAAS - Infa as a Service (AWS,RackSpace,Azure)
+PAAS - Platform as a Service (AWS Beanstack,Heroku)
+SAAS - Software as a Service (Google Drives,Google Docs MS Office, Rekognition for ML)
+
+Cloud Deployement Model
+------------------------
+Public Cloud (AWS, AZURE,GCP,IBM Bluemix)
+Private Cloud (HPE,VMware,RedHat Open Stack, Dell EMC)
+Hybrid Cloud
+
+EC2 -> Virtual Computing Env (Its a combination of CPU,Mem, Network Latency)
+	Instance types
+		-General Purpose
+		-Memory Optimized
+		-Storage Optimized
+		-Accelerated Computing
+		-Compute Optimized
+AMI -> Amazon Machine Images
+
+Elastaic Network Interface
+	This Contains
+	-Elastaic IP
+	-Public IP
+	-Private IP
+	-Security Group
+
+How to refresh the instance
+	sudo apt-get update
+
+Cloud Computing -> On Demand Delivery of
+						-Compute Power
+						-data base Storage
+						-other IT Resourse
+Pay-as-you-go-pricing
+You can have Resourse instancely without waiting
+Simply way to access Server,Strorage, DB with Web Application
+
+5 Characterstic of Cloud Computing
+	-On Demand Self Service
+	-Broad Network Access
+	-Multi-tenancy and Resourse Polling
+	-Rapid Elasticity and Scalabilty
+	-Measured Service
+6 Adavantage of Cloud Computing
+ -Trade capital Expense (CAPEX) for Opertaional Expense (OPEX)
+	pay on-Demand , donot own hardware
+	Reduce the Total Cost of OwnerShip (TCO) & OPEX
+ -Benifits of Massive Economies of Scale
+ -Stop Guessing Capacity
+ -Increase Speed and Agility
+ -Stoping Spending money on running and maintainig activity
+ -Go Global in Minitues
+
+Problem Solved by Cloud
+- Flexibility : Change Resourse Type when needed
+-Cost Effective
+-Scalabilty
+-Elasticity
+-High Availaibity and Fault Tolerance
+-Agility
+
+AWS Service have both Global Services & Region Specific
+	Global Service
+	-IAM
+	-Route 53
+	-CloudFront (Content Delivery Network)
+	-WAF (Web application Firewall)
+
+	Region Services
+	-Amazon EC2  (IAAS)
+	-Elastaic Beanstack (PAAS)
+	-Lamda (Function as a Service)
+	-Rekognition (SAAS)
+
+Shared Responsibility
+---------------------
+Customer -> Response for the Security In the Cloud
+AWS -> Security Of the Cloud
+
+Pricing Fundamental of Aws
+-Compute
+-Storage
+-Data transfer out of AWS Cloud
+
+AWS Regions are composed of : 3 or More Availaibity Zones
+
+Q) What is Cloud Computing?
+Ans)On- Demand availibility Computer System Resourse,Data Storage,and Computing Power
+without direct Active Managemnet by User.
+
+IAM Service
+--------------
+-Its a Global Service
+-All the user must have a Group
+-Same user Can be part of Multiple Group
+-User or Group can be assigned to a Json Doc called policies
+-These policies define the permission for the user
+-Provide Least Privilage Access to User
+
+Aws Root user
+	 Login Though EMAIL ID
+	 bishnumishraaws@gmail.com
+	 Password : Normal
+IAM User
+Account ID:	bishnu-aws-admin
+IAM User Name: bishnu-admin
+Pwd: Normal
+
+IAM Polices
+-------------
+
+
+Policies
+------------
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*"
+        }
+    ]
+}
+IAM Polices
+Ex:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:*",
+                "organizations:DescribeAccount",
+                "organizations:DescribeOrganization",
+                "organizations:DescribeOrganizationalUnit",
+                "organizations:DescribePolicy",
+                "organizations:ListChildren",
+                "organizations:ListParents",
+                "organizations:ListPoliciesForTarget",
+                "organizations:ListRoots",
+                "organizations:ListPolicies",
+                "organizations:ListTargetsForPolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+IAM Password Polices
+------------------------
+You can setup the password policy
+Allow all the IAM user to update reset their Password
+Require user to change the password after expiry
+Prevent password reuse
+
+MFA (Multi Factor Auth)
+-------------------------
+You have to protect your Root Accounts and IAM User
+MFA = Password + Security Device you own
+
+MFA Option in Aws
+----------------------
+Google Authenticator
+Authy (Support for Multi Token on a single device)
+Universal 2nd Factor (U2F) Security Key (Physical Device)
+Hardware Key
+
+How Can user Access Aws
+	- Aws Managemnet Console (Password +MFA)
+	- AWS Command line Interface (Protected By Access Key)
+	- Aws Software Development Kit (For Code : protected By Access Key)
+
+Access key can be generated through AWS Managemnet Console, Donot Share the Access Key its User Specific
+
+
+
+
+Access Key  : AKIAQFDC3WSJL7U3MXLT
+Secret access key : 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
+
+IAM Role For Services
+------------------------
+Common Role
+	Ec2 Instance Role
+	Lamda Function Role
+	Roles for Cloud Formation
+
+Create a Role , May be used for Ec2 Service
+Then Attach Polices to that Role ex: IAMReadonly
+Then Create Role
+
+IAM Security Tools
+------------------
+ - IAM Credentials Report (Accout -level)
+	- Report on List of all your accounts users and Status of their Credentials
+ - IAM Access Advisor (user-level)
+	-its Shows permission granted to a user
+	- we can use this info to revise the policies of user
+	-Basiclly help which service used by the user , if service not used by user we can remove the access
+
+
+IAM Best Practice
+----------------------
+Donot use AWS Root User Account
+One Physical User = One Aws user
+Assign user to group and assign permission to group
+Create a strong password policies
+Use and Enforce the User to use MFA
+Create and Use Roles to give permission to Access AWS Service
+Use Access Key for Programatic access
+Regularly Audit the permission of you Account and User through Credentials Report & IAM Access Advisor
+Never Share your IAM User and Access Key
+
+Shared Responsibility For IAM
+-------------------------------------
+Aws
+- Handel Infrasture (Global Network Security)
+-Configuration and vulnerbility Analysis
+-Compliance validation
+
+As User
+-User group,Role, Polices
+-Enable MFA
+-Rotate all the Keys
+-Give appropriate permission to user
+-Analyze access patterns and review permission
+
+
+
+
+
+

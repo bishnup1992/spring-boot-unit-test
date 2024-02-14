@@ -1,0 +1,110 @@
+Why we need Api gateway into design of microservices
+API Gateway plays a crucial role in the design of microservices architectures for several reasons
+Unified Entry Point: In a microservices architecture, there are multiple services performing different functions. An API Gateway provides a single entry point for clients to access various microservices. This simplifies the client-side interaction by abstracting the complexity of the underlying services.
+
+Aggregation and Composition: An API Gateway can aggregate and compose responses from multiple microservices into a single response. This is useful when a client needs data from multiple services to fulfill a request. Instead of making multiple requests to individual services, the client can make a single request to the API Gateway, which handles the aggregation logic.
+
+Routing and Load Balancing: API Gateways can route requests to the appropriate microservice based on routing rules or request metadata. They also perform load balancing to distribute incoming requests across multiple instances of the same service, ensuring scalability and high availability.
+
+Security: API Gateways provide a centralized location for implementing security mechanisms such as authentication, authorization, and encryption. They can authenticate clients, authorize access to specific endpoints or services, and enforce security policies across all microservices.
+
+Rate Limiting and Throttling: API Gateways can enforce rate limiting and throttling policies to prevent abuse or overload of microservices. They can limit the number of requests per client or IP address and throttle requests that exceed predefined thresholds, protecting the underlying services from being overwhelmed.
+
+Monitoring and Analytics: API Gateways collect metrics and logs for incoming requests, providing insights into service usage, performance, and errors. This enables better monitoring, troubleshooting, and optimization of microservices architecture.
+
+Caching: API Gateways can cache responses from microservices to improve performance and reduce latency. They can cache static or frequently accessed data and serve cached responses to clients, reducing the load on backend services and improving overall system performance.
+
+Overall, API Gateways serve as a critical component in microservices architectures, providing a centralized point for managing, securing, and optimizing communication between clients and microservices. They help improve scalability, flexibility, and maintainability of microservices-based systems.
+
+
+<!-- Maven -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
+Configure Gateway Routes:
+Define your gateway routes in the application.yml or application.properties file. Here's an example YAML configuration:
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: service1_route
+          uri: http://service1.example.com
+          predicates:
+            - Path=/api/service1/**
+        - id: service2_route
+          uri: http://service2.example.com
+          predicates:
+            - Path=/api/service2/**
+
+
+This configuration sets up routes for requests with paths starting with /api/service1 and /api/service2 to forward to the respective backend services (service1.example.com and service2.example.com).
+
+Run Spring Boot Application:
+Start your Spring Boot application, and Spring Cloud Gateway will automatically load the gateway routes and start routing requests according to the defined configurations.
+
+Customize and Extend:
+Spring Cloud Gateway offers extensive customization options for routing, filtering, load balancing, and more. You can customize your gateway further by adding filters, modifying routes dynamically, implementing security features, and integrating with service discovery solutions like Eureka or Consul.
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ApiGatewayApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGatewayApplication.class, args);
+    }
+}
+
+FIlter
+-----------
+
+To implement filters in Spring Cloud Gateway, you can use the GatewayFilter interface provided by Spring Cloud Gateway. You can define custom filters to modify requests and responses as they pass through the gateway. Below is an example of how to implement a custom filter in Spring Boot along with the API Gateway configuration:
+
+
+Create a Custom Filter:
+Create a class that implements the GatewayFilter interface. This interface provides a single method, filter(), where you can implement your custom logic. Here's an example of a custom logging filter
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+
+@Component
+public class LoggingFilter extends AbstractGatewayFilterFactory<LoggingFilter.Config> {
+
+    final Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
+
+    public LoggingFilter() {
+        super(Config.class);
+    }
+
+    @Override
+    public GatewayFilter apply(Config config) {
+        return (exchange, chain) -> {
+            logger.info("Request: {} {}", exchange.getRequest().getMethod(), exchange.getRequest().getURI());
+            return chain.filter(exchange).then(Mono.fromRunnable(() ->
+                logger.info("Response status: {}", exchange.getResponse().getStatusCode())));
+        };
+    }
+
+    public static class Config {
+        // Configuration properties if needed
+    }
+}
+
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: service1_route
+          uri: http://service1.example.com
+          predicates:
+            - Path=/api/service1/**
+          filters:
+            - LoggingFilter

@@ -39,3 +39,13 @@ Created detailed story mapping documentation to outline user journeys and priori
 Provided time estimates for various development tasks and milestones to facilitate project planning and resource allocation.
 Identified and documented design challenges encountered during CMS development, such as scalability issues, integration complexities, and user interface constraints.
 Documented key assumptions for MVP1 to guide development efforts and manage stakeholder expectations.
+
+
+-----------
+Temp
+
+@PutMapping("/updateStatus")
+    public ResponseEntity<String> updateFragmentStatus(@RequestBody List<String> fragmentIds, @RequestParam String newStatus) {
+        fragmentService.updateFragmentStatus(fragmentIds, newStatus);
+        return ResponseEntity.ok("Fragment status updated successfully");
+    }

@@ -1,3 +1,11 @@
-Hi Seema,
+I'm writing to address the ongoing issue regarding the publishing of Scribe Assets to AEM. As you may recall, we've been encountering difficulties with asset publication to AEM once any asset is decommissioned on AWM Scribe.
 
-It seems we haven't received many questions from the team. I believe Brad covered several points in the last team connect, and some team members might have addressed their queries in their one-on-one sessions. However, I do have a few questions listed below. Please feel free to add your own if there's anything we might have missed.
+Upon investigation and discussions with the team, it became evident that our existing Scribe query, which operates within the omni-scribe application, was unable to fetch decommissioned assets from AWM Scribe. This issue also affects Scribe Jobs, resulting in no updates being reflected on the AEM end when assets are decommissioned from AWM Scribe.
+
+To tackle this challenge, we've made modifications to the existing Scribe query in the omni-scribe application. I'm pleased to inform you that we have already deployed these changes in our development environment and have successfully validated them.
+
+Now, we are seeking your guidance on the next steps. We believe it's appropriate to proceed with User Acceptance Testing (UAT) deployment followed by Production Deployment. However, we value your input and would like to confirm if you agree with this approach.
+
+Your prompt feedback on this matter would be greatly appreciated. Please let us know if there are any concerns or additional steps you'd like us to consider before proceeding further.
+
+Looking forward to your response.

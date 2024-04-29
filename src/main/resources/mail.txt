@@ -25,3 +25,15 @@ For queries regarding the design architecture of the New CMS, please reach out t
 In case of any escalations, please contact my manager, Seema.
 
 I appreciate your understanding and cooperation during my absence. I will attend to your messages as soon as possible upon my return
+
+----------------------------------
+
+Subject: Request for Input on Scribe Deployment Window
+
+Hi Rachel,
+
+I hope this email finds you well. I wanted to inform you that we have received the sign-off email from UAT regarding the Scribe Query Fix. We are now poised for production deployment.
+
+As you are aware, we have multiple code freeze windows starting from the 13th of May. After careful consideration, we have identified the window between the 7th and the 10th of May as the optimal timeframe for the Scribe deployment. However, it's worth noting that our usual process for Scribe deployment coincides with the sprint's last day, which falls on the 13th of May, during the freeze period. If we cannot proceed with the deployment between the 7th and the 10th of May, our next available window would be on the 18th of May.
+
+I would greatly appreciate your input and guidance on this matter. Please let me know your thoughts at your earliest convenience

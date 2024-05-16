@@ -41,3 +41,10 @@ I would greatly appreciate your input and guidance on this matter. Please let me
 
 kubectl get secret <secret-name> -o yaml > new_secret.yaml
 kubectl apply -f new_secret.yaml
+
+
+we've pulled the password for the prod deployment for Scribe. We ran into some environment issues while deploying changes to UAT, which prevented us from merging them to Prod. Despite multiple attempts, we couldn't resolve the environment issues.
+
+To work around this and due to time constraints, we've decided to manually deploy to production via Spinnaker using the UAT build version. We've obtained the password via go/psp.
+
+Additionally, I've created a Jira ticket for the Spinnaker team to address the UAT Env issue to prevent similar hiccups during future prod deployments.

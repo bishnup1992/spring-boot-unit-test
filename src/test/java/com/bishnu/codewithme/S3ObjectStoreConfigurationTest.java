@@ -1,49 +1,47 @@
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = AwsAPISaltConfig.class)
+@TestPropertySource(properties = {
+        "scribe.salt.key=scribeSaltKey",
+        "rest.salt.key=restSaltKey"
+})
 public class AwsAPISaltConfigTest {
 
-    private AwsCredentialConfig mockAwsCredentialConfig;
+    @Autowired
     private AwsAPISaltConfig awsAPISaltConfig;
 
-    @Value("${scribe.salt.key}")
-    private String scribeSaltKey = "scribeKey";
-
-    @Value("${rest.salt.key}")
-    private String restSaltKey = "restKey";
+    @MockBean
+    private AwsCredentialConfig awsCredentialConfig;
 
     @BeforeEach
     public void setUp() {
-        AWSSecretsManager mockSecretManager = mock(AWSSecretsManager.class);
-        mockAwsCredentialConfig = new AwsCredentialConfig(mockSecretManager);
-
-        awsAPISaltConfig = new AwsAPISaltConfig();
-        ReflectionTestUtils.setField(awsAPISaltConfig, "scribeSaltKey", scribeSaltKey);
-        ReflectionTestUtils.setField(awsAPISaltConfig, "restSaltKey", restSaltKey);
+        when(awsCredentialConfig.getSecret("scribeSaltKey")).thenReturn("scribeSaltSecret");
+        when(awsCredentialConfig.getSecret("restSaltKey")).thenReturn("restSaltSecret");
     }
 
     @Test
     public void testScribeApiSalt() {
-        when(mockAwsCredentialConfig.getSecret(anyString())).thenReturn("scribeSecret");
-
-        String scribeSalt = awsAPISaltConfig.scribeApiSalt(mockAwsCredentialConfig);
-        assertEquals("scribeSecret", scribeSalt);
+        String scribeSalt = awsAPISaltConfig.scribeApiSalt(awsCredentialConfig);
+        assertEquals("scribeSaltSecret", scribeSalt);
     }
 
     @Test
     public void testRestApiSalt() {
-        when(mockAwsCredentialConfig.getSecret(anyString())).thenReturn("restSecret");
-
-        String restSalt = awsAPISaltConfig.restApiSalt(mockAwsCredentialConfig);
-        assertEquals("restSecret", restSalt);
+        String restSalt = awsAPISaltConfig.restApiSalt(awsCredentialConfig);
+        assertEquals("restSaltSecret", restSalt);
     }
 }

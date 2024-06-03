@@ -1,5 +1,4 @@
-package com.bishnu.codewithme;
-
+package com.example.demo;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
@@ -23,9 +22,9 @@ public class S3ObjectStoreConfigurationTest {
     @Mock
     private AwsS3Properties awsS3Properties;
     @Mock
-    private AwsS3Properties.S3 s3;
+    private AwsS3Properties.S3Properties s3Properties;
     @Mock
-    private AwsS3Properties.Client client;
+    private AwsS3Properties.ClientProperties clientProperties;
     @Mock
     private AmazonS3Client amazonS3Client;
 
@@ -35,12 +34,12 @@ public class S3ObjectStoreConfigurationTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        when(awsS3Properties.getS3()).thenReturn(s3);
-        when(awsS3Properties.getClient()).thenReturn(client);
-        when(s3.getKeyARN()).thenReturn("arn:aws:kms:us-west-2:123456789012:key/abcd-efgh-ijkl-mnop");
-        when(client.getProxyHost()).thenReturn("proxyHost");
-        when(client.getProxyPort()).thenReturn(8080);
-        when(client.getNonProxyHosts()).thenReturn("nonProxyHosts");
+        when(awsS3Properties.getS3()).thenReturn(s3Properties);
+        when(awsS3Properties.getClient()).thenReturn(clientProperties);
+        when(s3Properties.getKeyARN()).thenReturn("arn:aws:kms:us-west-2:123456789012:key/abcd-efgh-ijkl-mnop");
+        when(clientProperties.getProxyHost()).thenReturn("proxyHost");
+        when(clientProperties.getProxyPort()).thenReturn(8080);
+        when(clientProperties.getNonProxyHosts()).thenReturn("nonProxyHosts");
 
         config = new S3ObjectStoreConfiguration(region);
     }

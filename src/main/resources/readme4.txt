@@ -15,3 +15,9 @@ Sincerely,
 
 
 
+ ECS Arcticutreture based AWS Fargate Model
+ Rahul suggested to go for Pay as go model than Run as you go model
+ ESC -> Wrapper on Terform
+ Point of Contact -> Will be assigned by Rahul By tomorrow
+ This spproch Suppoted Spinaker Migration
+ Its Support All the lower Environment So , we can very in all the environement

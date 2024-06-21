@@ -1,0 +1,37 @@
+ @Test
+    public void testSecurityFilterChainBean() throws Exception {
+        // Mock the HttpSecurity
+        HttpSecurity http = mock(HttpSecurity.class);
+
+        // Mock behaviors for http methods to avoid null pointer exceptions
+        when(http.authorizeRequests()).thenReturn(http);
+        when(http.antMatchers("/public/**")).thenReturn(http);
+        when(http.permitAll()).thenReturn(http);
+        when(http.anyRequest()).thenReturn(http);
+        when(http.authenticated()).thenReturn(http);
+        when(http.formLogin()).thenReturn(http);
+        when(http.logout()).thenReturn(http);
+
+        // Test the securityFilterChain method
+        SecurityFilterChain securityFilterChain = adsfSecurityConfig.securityFilterChain(http, mockAdsfConfigurer);
+
+        // Verify that adsfConfigurer.configure was called
+        verify(mockAdsfConfigurer, times(1)).configure(http);
+
+        assertNotNull(securityFilterChain, "The SecurityFilterChain bean should be configured.");
+    }
+
+    @Test
+    public void testApiRequestMatcherBean() {
+        // Mock the Environment to return a specific pattern for testing
+        when(mockEnvironment.getProperty("security.api.pattern", "/api/**")).thenReturn("/test/**");
+
+        // Initialize the configuration with the mocked environment
+        RequestMatcher apiRequestMatcher = adsfSecurityConfig.apiRequestMatcher();
+
+        // Ensure the RequestMatcher bean is correctly configured
+        assertNotNull(apiRequestMatcher, "The RequestMatcher bean should be configured.");
+        assertTrue(apiRequestMatcher instanceof AntPathRequestMatcher, "The RequestMatcher should be an instance of AntPathRequestMatcher.");
+        AntPathRequestMatcher matcher = (AntPathRequestMatcher) apiRequestMatcher;
+        assertEquals("/test/**", matcher.getPattern(), "The RequestMatcher should match the pattern '/test/**'.");
+    }

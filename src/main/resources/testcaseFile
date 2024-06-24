@@ -1,20 +1,9 @@
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest
-public class FragmentControllerServiceApplicationTests {
-
-    @Test
-    public void contextLoads() {
-        // This test will pass if the application context loads successfully
-    }
-
-    @Test
-    public void applicationContextTest() {
-        // Additional test to verify application context starts up without errors
-        FragmentControllerServiceApplication.main(new String[]{});
-        assertThat(true).isTrue(); // Basic assertion to complete the test
-    }
-}
+Migration Date: Saturday, 29th.
+Activity: AWM Scribe is moving the Object Store from Neptune to Mercury.
+Status: Migration of files in UAT and Production is complete. Data synchronization is in progress.
+Validation:
+AWM team has validated the migration.
+Our team can optionally validate by downloading objects/binaries post-migration. Report any issues to the AWM Scribe support team.
+No UAT sign-off is required from our team.
+Production validation is recommended but not mandatory.
+Additional Info: AWM will deprovision some compute resources related to DynamoDB. Omni-Scribe is not impacted.

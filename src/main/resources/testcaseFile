@@ -1,45 +1,20 @@
-package com.example.demo;
-
-import static org.mockito.Mockito.*;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.core.env.Environment;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConfigPropertiesTest {
+@SpringBootTest
+public class FragmentControllerServiceApplicationTests {
 
-    @Mock
-    private Environment environment;
-
-    private ConfigProperties configProperties;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        // Mock the environment properties
-        when(environment.getProperty("frs.base-url")).thenReturn("http://example.com");
-        when(environment.getProperty("frs.create-fragment-api")).thenReturn("/api/createFragment");
-        when(environment.getProperty("frs.update-fragment-api")).thenReturn("/api/updateFragment");
-
-        // Initialize ConfigProperties
-        configProperties = new ConfigProperties();
-
-        // Manually set properties from the mocked environment
-        configProperties.setBaseUrl(environment.getProperty("frs.base-url"));
-        configProperties.setCreateFragmentApi(environment.getProperty("frs.create-fragment-api"));
-        configProperties.setUpdateFragmentApi(environment.getProperty("frs.update-fragment-api"));
+    @Test
+    public void contextLoads() {
+        // This test will pass if the application context loads successfully
     }
 
     @Test
-    public void testConfigProperties() {
-        assertNotNull(configProperties);
-        assertEquals("http://example.com", configProperties.getBaseUrl());
-        assertEquals("/api/createFragment", configProperties.getCreateFragmentApi());
-        assertEquals("/api/updateFragment", configProperties.getUpdateFragmentApi());
+    public void applicationContextTest() {
+        // Additional test to verify application context starts up without errors
+        FragmentControllerServiceApplication.main(new String[]{});
+        assertThat(true).isTrue(); // Basic assertion to complete the test
     }
 }

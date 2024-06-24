@@ -1,31 +1,45 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.async.DeferredResult;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class FragmentExceptionHandlerTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.core.env.Environment;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConfigPropertiesTest {
+
+    @Mock
+    private Environment environment;
+
+    private ConfigProperties configProperties;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        // Mock the environment properties
+        when(environment.getProperty("frs.base-url")).thenReturn("http://example.com");
+        when(environment.getProperty("frs.create-fragment-api")).thenReturn("/api/createFragment");
+        when(environment.getProperty("frs.update-fragment-api")).thenReturn("/api/updateFragment");
+
+        // Initialize ConfigProperties
+        configProperties = new ConfigProperties();
+
+        // Manually set properties from the mocked environment
+        configProperties.setBaseUrl(environment.getProperty("frs.base-url"));
+        configProperties.setCreateFragmentApi(environment.getProperty("frs.create-fragment-api"));
+        configProperties.setUpdateFragmentApi(environment.getProperty("frs.update-fragment-api"));
+    }
 
     @Test
-    public void testHandleFragmentServiceException() {
-        // Arrange
-        FragmentExceptionHandler exceptionHandler = new FragmentExceptionHandler();
-        FragmentControllerServiceException mockException = mock(FragmentControllerServiceException.class);
-
-        String expectedMessage = "Service error occurred";
-        when(mockException.getMessage()).thenReturn(expectedMessage);
-
-        // Act
-        ResponseEntity<String> responseEntity = exceptionHandler.handleFragmentServiceException(mockException);
-
-        // Assert
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-        assertEquals(expectedMessage, responseEntity.getBody());
+    public void testConfigProperties() {
+        assertNotNull(configProperties);
+        assertEquals("http://example.com", configProperties.getBaseUrl());
+        assertEquals("/api/createFragment", configProperties.getCreateFragmentApi());
+        assertEquals("/api/updateFragment", configProperties.getUpdateFragmentApi());
     }
 }

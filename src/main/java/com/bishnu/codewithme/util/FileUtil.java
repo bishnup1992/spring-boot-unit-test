@@ -9,11 +9,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+package com.example.fragmentservice.util;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class FileUtil {
 
-    private static final String UPLOAD_DIR = "uploads/";
-
-    public static void storeFile(MultipartFile file, String type) {
+    public static void storeFile(MultipartFile file, String type, String uploadDir) {
         try {
             if (file.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file.");
@@ -24,7 +31,7 @@ public class FileUtil {
             }
 
             String fileName = type + "_" + file.getOriginalFilename();
-            Path uploadPath = Paths.get(UPLOAD_DIR + fileName);
+            Path uploadPath = Paths.get(uploadDir, fileName);
             Files.createDirectories(uploadPath.getParent());
             Files.write(uploadPath, file.getBytes());
         } catch (IOException e) {

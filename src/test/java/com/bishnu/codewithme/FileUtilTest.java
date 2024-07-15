@@ -1,30 +1,57 @@
-package com.bishnu.codewithme;
-
-package com.example.fragment;
+package com.example.demo.util;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
+import org.mockito.Mock;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-public class FileUtilTest {
+class FileUtilTest {
+
+    @Mock
+    MultipartFile file;
 
     @Test
-    public void testSaveFile() throws IOException {
-        String uploadDir = "test-uploads";
-        MockMultipartFile file = new MockMultipartFile("logo", "test.png", "image/png", "test data".getBytes());
+    void storeFile_success() throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.isEmpty()).thenReturn(false);
+        when(file.getOriginalFilename()).thenReturn("test.png");
+        when(file.getBytes()).thenReturn("test data".getBytes());
 
-        FileUtil.saveFile(uploadDir, file);
+        FileUtil.storeFile(file, "uploads/");
 
-        File destFile = new File(uploadDir, file.getOriginalFilename());
-        assertTrue(destFile.exists());
-        assertEquals("test data", new String(java.nio.file.Files.readAllBytes(destFile.toPath())));
+        assertTrue(Files.exists(Paths.get("uploads/test.png")));
+        Files.delete(Paths.get("uploads/test.png"));
+    }
 
-        // Clean up the test file
-        destFile.delete();
-        new File(uploadDir).delete();
+    @Test
+    void storeFile_emptyFile() {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.isEmpty()).thenReturn(true);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            FileUtil.storeFile(file, "uploads/");
+        });
+
+        assertEquals("Failed to store empty file.", exception.getMessage());
+    }
+
+    @Test
+    void storeFile_ioException() throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.isEmpty()).thenReturn(false);
+        when(file.getOriginalFilename()).thenReturn("test.png");
+        when(file.getBytes()).thenThrow(new IOException("IO Error"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            FileUtil.storeFile(file, "uploads/");
+        });
+
+        assertEquals("Failed to store file.", exception.getMessage());
     }
 }
